@@ -41,9 +41,12 @@ app.get("/wise-sayings/:id", async (req, res) => {
     id,
   ]);
   // 요청한 id가 존재하지않을경우(등록된 데이터가없을경우) not found 에러표시
-  if ( rows.length == 0) {
+  if (rows.length == 0) {
     res.status(404).send('not found');
+    // return을해줄시 함수를 종료함 but return 안해주면 아래까지 실행됨
+    return;
   }
+
   res.json(rows[0]);
 });
 
