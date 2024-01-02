@@ -130,6 +130,50 @@ app.get("/wise-sayings/:id", async (req, res) => {
   res.json(rows[0]);
 });
 
+// 삭제
+app.delete("/wise-sayings/:id", async (req, res) => {
+  const { id } = req.params;
+
+  const { author, content } = req.body;
+
+  const [rows] = await pool.query("SELECT * FROM wise_saying WHERE id = ?", [
+    id,
+  ]);
+
+  if (rows.length == 0) {
+    res.status(404).send("not found");
+    return;
+  }
+
+
+
+  const [rs] = await pool.query(
+    `
+    DELETE FROM wise_saying
+    WHERE id = ?
+    `,
+    [id]
+  );
+
+  res.status(200).json({
+    id
+  });
+});
+
+app.get("/wise-sayings/:id", async (req, res) => {
+  const { id } = req.params
+  const [rows] = await pool.query("SELECT * FROM wise_saying WHERE id = ?", [
+    id,
+  ]);
+  // 요청한 id가 존재하지않을경우(등록된 데이터가없을경우) not found 에러표시
+  if (rows.length == 0) {
+    res.status(404).send('not found');
+    // return을해줄시 함수를 종료함 but return 안해주면 아래까지 실행됨
+    return;
+  }
+
+  res.json(rows[0]);
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
