@@ -1,4 +1,5 @@
 import express from 'express';
+import pool from "mysql2/promise";
 
 const app = express()
 const port = 3000
@@ -22,5 +23,5 @@ app.get('/wise-saying', (req, res) => {
 })
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`Examㅎple app listening on port ${port}`)
 })
