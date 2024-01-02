@@ -35,6 +35,7 @@ app.get("/wise-sayings", async (req, res) => {
   res.json(rows);
 });
 
+// 생성 
 app.post("/wise-sayings", async (req, res) => {
   const { author, content } = req.body;
 
@@ -67,6 +68,52 @@ app.post("/wise-sayings", async (req, res) => {
   });
 });
 
+
+// 수정
+app.patch("/wise-sayings/:id", async (req, res) => {
+  const { id } = req.params;
+
+  const { author, content } = req.body;
+
+  const [rows] = await pool.query("SELECT * FROM wise_saying WHERE id = ?", [
+    id,
+  ]);
+
+  if (rows.length == 0) {
+    res.status(404).send("not found");
+    return;
+  }
+
+  if (!author) {
+    res.status(400).json({
+      msg: "author required",
+    });
+    return;
+  }
+
+  if (!content) {
+    res.status(400).json({
+      msg: "content required",
+    });
+    return;
+  }
+
+  const [rs] = await pool.query(
+    `
+    UPDATE wise_saying
+    SET content = ?,
+    author = ?
+    WHERE id = ?
+    `,
+    [content, author, id]
+  );
+
+  res.status(200).json({
+    id,
+    author,
+    content,
+  });
+});
 
 app.get("/wise-sayings/:id", async (req, res) => {
   const { id } = req.params
